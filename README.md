@@ -1,5 +1,5 @@
 # About
-`MAIO - MogileFS All In One` provides a way to set up a minimal [MogileFS](https://github.com/mogilefs/mogilefs-wiki) cluster without pain. Tracker, stored and tracker DB are instantiated in a single container. It is suitable for testing and developing scenarios. 
+**MAIO - MogileFS All In One** provides a way to set up a minimal [MogileFS](https://github.com/mogilefs/mogilefs-wiki) cluster without pain. Tracker, stored and tracker DB are instantiated in a single container. It is suitable for testing and developing scenarios. 
 
 # Highlight
  - Based on the latest version: MogileFS-Server 2.73 / MogileFS-Utils 2.30 / MogileFS-Network 0.06 
@@ -9,8 +9,8 @@
  - Contributor friendly - typical contribution process, no weird policies
  
 # Howto
-- docker pull hrchu/mogilefs-all-in-one
-- docker run -e DOMAIN_NAME=testdomain -e CLASS_NAMES="testclass1 testclass2" -t -d -p 7001:7001 -p 7500:7500 --name maio hrchu/mogilefs-all-in-one
+- `docker pull hrchu/mogilefs-all-in-one`
+- `docker run -e DOMAIN_NAME=testdomain -e CLASS_NAMES="testclass1 testclass2" -t -d -p 7001:7001 -p 7500:7500 --name maio hrchu/mogilefs-all-in-one`
 
 Now MogileFS is ready to war on port 7001/7500! 😎
 
