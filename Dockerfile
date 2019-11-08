@@ -4,8 +4,8 @@ MAINTAINER petertc "petertc.chu@gmail.com"
 RUN bash -c "debconf-set-selections <<< 'mysql-server mysql-server/root_password password super'"
 RUN bash -c "debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password super'"
 
-RUN apt update \
-  && apt-get install -y cpanminus build-essential supervisor libdbd-mysql-perl sysstat mysql-server libmysqlclient-dev libperl-dev sudo \
+RUN apt update 
+RUN apt-get install -y --no-install-recommends cpanminus build-essential supervisor libdbd-mysql-perl sysstat mysql-server libmysqlclient-dev libperl-dev sudo \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
