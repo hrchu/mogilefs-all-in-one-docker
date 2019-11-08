@@ -12,7 +12,7 @@ then
   NODE_PORT="7500"
 fi
 
-mysqld &
+find /var/lib/mysql -type f -exec touch {} \; && mysqld &
 sleep 3
 
 sudo -u mogile mogilefsd --daemon -c /etc/mogilefs/mogilefsd.conf

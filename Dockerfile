@@ -25,12 +25,13 @@ RUN mkdir -p /etc/mysql/conf.d \
     echo '!includedir /etc/mysql/conf.d/'; \
   } > /etc/mysql/my.cnf
 
+# Use touch here to workaround https://github.com/docker/for-linux/issues/72#issuecomment-319904698
 RUN mkdir /var/run/mysqld \
   && chown mysql:mysql /var/run/mysqld \ 
-  && mysqld & \
+  && find /var/lib/mysql -type f -exec touch {} \; && mysqld & \ 
   until [ `mysql -h127.0.0.1 -uroot -psuper -e 'select null limit 1' 2>/dev/null >/dev/null; echo $?` -eq 0 ]; do sleep 1; done \
   && mysql -uroot -psuper -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'super';" \
-  && mogdbsetup --type=MySQL --yes --dbrootuser=root --dbrootpass=super --dbname=mogilefs --dbuser=mogile --dbpassword=sekrit
+  && mogdbsetup --type=MySQL --yes --dbrootuser=root --dbrootpass=super --dbname=mogilefs --dbuser=mogile --dbpassword=mogilepw
 
 RUN  mkdir -p /etc/mogilefs \
   && mkdir -p /var/mogdata/dev1 \
