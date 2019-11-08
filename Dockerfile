@@ -28,8 +28,8 @@ RUN mkdir -p /etc/mysql/conf.d \
 # Use touch here to workaround https://github.com/docker/for-linux/issues/72#issuecomment-319904698
 RUN mkdir /var/run/mysqld \
   && chown mysql:mysql /var/run/mysqld \ 
-  && find /var/lib/mysql -type f -exec touch {} \; && mysqld & \ 
-  until [ `mysql -h127.0.0.1 -uroot -psuper -e 'select null limit 1' 2>/dev/null >/dev/null; echo $?` -eq 0 ]; do sleep 1; done \
+  && find /var/lib/mysql -type f -exec touch {} \; && mysqld & \
+  timeout 60 bash -c "until mysql -h127.0.0.1 -uroot -psuper -e 'select null limit 1'; do sleep 1; done" \
   && mysql -uroot -psuper -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'super';" \
   && mogdbsetup --type=MySQL --yes --dbrootuser=root --dbrootpass=super --dbname=mogilefs --dbuser=mogile --dbpassword=mogilepw
 
