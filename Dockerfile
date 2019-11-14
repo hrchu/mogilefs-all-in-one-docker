@@ -12,6 +12,9 @@ RUN apt-get install -y --no-install-recommends cpanminus build-essential supervi
 COPY IO-AIO-4.72-patched.tgz /root/IO-AIO-4.72.tgz
 RUN cpanm /root/IO-AIO-4.72.tgz
 
+# https://groups.google.com/d/msg/mogile/r4eaPoOlRoE/aqRhOLQSClYJ
+RUN cpanm BRADFITZ/Sys-Syscall-0.23.tar.gz
+
 RUN cpanm install --force MogileFS::Server \
   && cpanm install DBD::mysql \
   && cpanm install MogileFS::Utils \
