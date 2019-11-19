@@ -58,10 +58,6 @@ Checking devices...
              total:   956.450    120.078    836.372  12.55%
 ```
 
-# Known issues
-
-* The container will fail to start with `docker restart`. Use `docker stop && docker start [container name]` instead. 
-
 # Contributing
 All contributions are welcome. Nothing else special.
 

@@ -1,6 +1,26 @@
 #!/bin/bash
 set -x
 
+MYSQL_FILE_COUNT=$(ls /var/lib/mysql|wc -l)
+if [ $MYSQL_FILE_COUNT != 0 ]; then
+  mkdir -p /var/run/mysqld 
+  chown mysql:mysql /var/run/mysqld  
+  rm /var/run/mysqld/*
+  find /var/lib/mysql -type f -exec touch {} \;
+  mysqld &
+  sleep 3; timeout 60 bash -c "until mysql -uroot -psuper -e 'select null limit 1'; do sleep 1; done" 
+
+  set -m
+  sudo -u mogile mogstored -c /etc/mogilefs/mogstored.conf &
+  sudo -u mogile mogilefsd -c /etc/mogilefs/mogilefsd.conf &
+  sleep 5
+
+  mogadm check
+  fg
+fi
+
+#############
+
 if [ "`echo ${NODE_HOST}`" == "" ]
 then
   NODE_HOST="127.0.0.1"
@@ -12,10 +32,20 @@ then
   NODE_PORT="7500"
 fi
 
-find /var/lib/mysql -type f -exec touch {} \; && mysqld &
-timeout 60 bash -c "until mysql -h127.0.0.1 -uroot -psuper -e 'select null limit 1'; do sleep 1; done" 
+mkdir -p /var/run/mysqld 
+chown mysql:mysql /var/run/mysqld  
 
-sudo -u mogile mogilefsd --daemon -c /etc/mogilefs/mogilefsd.conf
+# Use touch here to workaround https://github.com/docker/for-linux/issues/72#issuecomment-319904698
+find /var/lib/mysql -type f -exec touch {} \;
+mysqld --initialize-insecure
+mysqld &
+
+timeout 60 bash -c "until mysql -uroot -e 'select null limit 1'; do sleep 1; done" 
+mysql -uroot -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'super';" 
+
+mogdbsetup --type=MySQL --yes --dbrootuser=root --dbrootpass=super --dbname=mogilefs --dbuser=mogile --dbpassword=mogilepw
+
+sudo -u mogile mogilefsd -c /etc/mogilefs/mogilefsd.conf &
 sleep 5
 
 mogadm --trackers=127.0.0.1:7001 host add mogilestorage --ip=${NODE_HOST} --port=${NODE_PORT} --status=alive
@@ -42,11 +72,15 @@ fi
 mogadm domain list
 mogadm class list
 
+
+mkdir -p /etc/mogilefs \
+  && mkdir -p /var/mogdata/dev1 \
+  && mkdir -p /var/mogdata/dev2
+chown mogile -R /var/mogdata
+
+set -m
 sudo -u mogile mogstored -c /etc/mogilefs/mogstored.conf &
 sleep 5
 
 mogadm check
-pkill mogilefsd
-
-sudo -u mogile mogilefsd -c /etc/mogilefs/mogilefsd.conf 
-
+fg
