@@ -8,13 +8,15 @@
  - Quality and compatibility - Continuous test and build against the latest Docker version
  - Contributor friendly - typical contribution process, no weird policies
  
-# Howto
-- `docker pull hrchu/mogilefs-all-in-one`
-- `docker run -e DOMAIN_NAME=testdomain -e CLASS_NAMES="testclass1 testclass2" -t -d -p 7001:7001 -p 7500:7500 --name maio hrchu/mogilefs-all-in-one`
+# How to use this image
 
-Now MogileFS is ready to war on port 7001/7500! 😎
+Starting a MogileFS instance is simple:
 
-You can check it by:
+`docker run -t -d -p 7001:7001 -p 7500:7500 --name maio hrchu/mogilefs-all-in-one`
+
+That's it! Now MogileFS is ready to war on port 7001/7500! 😎
+
+You can confirm it by either:
 ```
 #echo '!jobs' |nc localhost 7001 
 delete count 1
@@ -56,6 +58,23 @@ Checking devices...
   [ 1] dev2           478.225     60.039    418.186  12.55%  writeable   N/A
   ---- ------------ ---------- ---------- ---------- ------
              total:   956.450    120.078    836.372  12.55%
+```
+
+# Caveats
+
+## Domain/Class configuration
+
+As shown in the previous example, you can use environment variables to specify MogileFS domain and classes:
+```
+docker run -e DOMAIN_NAME=testdomain -e CLASS_NAMES="testclass1 testclass2" -t -d -p 7001:7001 -p 7500:7500 --name maio hrchu/mogilefs-all-in-one`
+```
+
+## Persistent data store
+
+You can let Docker manage the storage of your data by writing the mysql/mogstored files to disk on the host system using its own internal volume management. In this way, you can recreate the container without lossing data. An example:
+```
+mkdir -p /opt/maio-mysql/ /opt/mogdata/
+docker rm -f maio; docker run -t -d -p 7001:7001 -p 7500:7500 --name maio mogilefs-all-in-one
 ```
 
 # Contributing
