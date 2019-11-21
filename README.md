@@ -68,7 +68,7 @@ Checking devices...
 
 As shown in the previous example, you can use environment variables to specify MogileFS domain and classes:
 ```
-$ sudo docker run -e DOMAIN_NAME=testdomain -e CLASS_NAMES="testclass1 testclass2" -t -d -p 7001:7001 -p 7500:7500 --name maio hrchu/mogilefs-all-in-one`
+$ sudo docker run -t -d -p 7001:7001 -p 7500:7500 -e DOMAIN_NAME=testdomain -e CLASS_NAMES="testclass1 testclass2" --name maio hrchu/mogilefs-all-in-one`
 ```
 
 ## Persistent data store
@@ -76,7 +76,7 @@ $ sudo docker run -e DOMAIN_NAME=testdomain -e CLASS_NAMES="testclass1 testclass
 You can let Docker manage the storage of your data by writing the mysql/mogstored files to disk on the host system using its own internal volume management. In this way, you can recreate the container without lossing data. An example:
 ```
 $ sudo mkdir -p /opt/maio-mysql/ /opt/mogdata/
-$ sudo docker rm -f maio; docker run -t -d -p 7001:7001 -p 7500:7500 -v /opt/mogdata:/var/mogdata -v /opt/maio-mysql:/var/lib/mysql --name maio mogilefs-all-in-one
+$ sudo docker run -t -d -p 7001:7001 -p 7500:7500 -v /opt/mogdata:/var/mogdata -v /opt/maio-mysql:/var/lib/mysql --name maio mogilefs-all-in-one
 ```
 
 # Contributing
@@ -84,4 +84,4 @@ All contributions are welcome. Nothing else special.
 
 # Acknowledgement
 
-Artifacts is based on [Jeffutter](https://hub.docker.com/r/jeffutter/mogile-tracker)'s contribution. I enjoy his work for many years. However, he does not maintain it anymore. Besides, he removed all source code, so I decided to build a new one with many improvements.
+The work is based on [Jeffutter](https://hub.docker.com/r/jeffutter/mogile-tracker)'s contribution. I enjoy his work for many years. However, he does not maintain it anymore. Besides, he removed all source code, so I decided to build a new one with significant improvements.
