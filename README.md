@@ -12,13 +12,15 @@
 
 Starting a MogileFS instance is simple:
 
-`docker run -t -d -p 7001:7001 -p 7500:7500 --name maio hrchu/mogilefs-all-in-one`
+```
+$ sudo docker run -t -d -p 7001:7001 -p 7500:7500 --name maio hrchu/mogilefs-all-in-one
+```
 
 That's it! Now MogileFS is ready to war on port 7001/7500! 😎
 
 You can confirm it by either:
 ```
-#echo '!jobs' |nc localhost 7001 
+$ echo '!jobs' |nc localhost 7001 
 delete count 1
 delete desired 1
 delete pids 402
@@ -44,7 +46,7 @@ replicate pids 403
 ```
 or
 ```
-# docker exec -it maio mogadm check
+$ sudo docker exec -it maio mogadm check
 Checking trackers...
   127.0.0.1:7001 ... OK
 
@@ -66,15 +68,15 @@ Checking devices...
 
 As shown in the previous example, you can use environment variables to specify MogileFS domain and classes:
 ```
-docker run -e DOMAIN_NAME=testdomain -e CLASS_NAMES="testclass1 testclass2" -t -d -p 7001:7001 -p 7500:7500 --name maio hrchu/mogilefs-all-in-one`
+$ sudo docker run -e DOMAIN_NAME=testdomain -e CLASS_NAMES="testclass1 testclass2" -t -d -p 7001:7001 -p 7500:7500 --name maio hrchu/mogilefs-all-in-one`
 ```
 
 ## Persistent data store
 
 You can let Docker manage the storage of your data by writing the mysql/mogstored files to disk on the host system using its own internal volume management. In this way, you can recreate the container without lossing data. An example:
 ```
-mkdir -p /opt/maio-mysql/ /opt/mogdata/
-docker rm -f maio; docker run -t -d -p 7001:7001 -p 7500:7500  -v /opt/mogdata:/var/mogdata -v /opt/maio-mysql:/var/lib/mysql --name maio mogilefs-all-in-one
+$ sudo mkdir -p /opt/maio-mysql/ /opt/mogdata/
+$ sudo docker rm -f maio; docker run -t -d -p 7001:7001 -p 7500:7500 -v /opt/mogdata:/var/mogdata -v /opt/maio-mysql:/var/lib/mysql --name maio mogilefs-all-in-one
 ```
 
 # Contributing
