@@ -74,7 +74,7 @@ docker run -e DOMAIN_NAME=testdomain -e CLASS_NAMES="testclass1 testclass2" -t -
 You can let Docker manage the storage of your data by writing the mysql/mogstored files to disk on the host system using its own internal volume management. In this way, you can recreate the container without lossing data. An example:
 ```
 mkdir -p /opt/maio-mysql/ /opt/mogdata/
-docker rm -f maio; docker run -t -d -p 7001:7001 -p 7500:7500 --name maio mogilefs-all-in-one
+docker rm -f maio; docker run -t -d -p 7001:7001 -p 7500:7500  -v /opt/mogdata:/var/mogdata -v /opt/maio-mysql:/var/lib/mysql --name maio mogilefs-all-in-one
 ```
 
 # Contributing
