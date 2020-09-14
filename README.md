@@ -79,6 +79,11 @@ $ sudo mkdir -p /opt/maio-mysql/ /opt/mogdata/
 $ sudo docker run -t -d -p 7001:7001 -p 7500:7500 -v /opt/mogdata:/var/mogdata -v /opt/maio-mysql:/var/lib/mysql --name maio mogilefs-all-in-one
 ```
 
+## K8s deployment
+
+We don't recommand you to use this in production environment. However, it might be suitable to run it on some lightweight k8s alternatives, e.g., k3s, for development use.
+Ref [wiki](https://github.com/hrchu/mogilefs-all-in-one-docker/wiki) for example yaml configurations.
+
 # Contributing
 All contributions are welcome. Nothing else special.
 
