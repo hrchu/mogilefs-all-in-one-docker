@@ -1,6 +1,9 @@
 #!/bin/bash
 set -x
 
+
+###### already inited #######
+
 MYSQL_FILE_COUNT=$(ls /var/lib/mysql|wc -l)
 if [ $MYSQL_FILE_COUNT != 0 ]; then
   mkdir -p /var/run/mysqld 
@@ -19,7 +22,7 @@ if [ $MYSQL_FILE_COUNT != 0 ]; then
   fg
 fi
 
-#############
+###### fresh run only #######
 
 if [ "`echo ${NODE_HOST}`" == "" ]
 then
@@ -38,13 +41,17 @@ chown mysql:mysql /var/run/mysqld
 # Use touch here to workaround https://github.com/docker/for-linux/issues/72#issuecomment-319904698
 find /var/lib/mysql -type f -exec touch {} \;
 mysqld --initialize-insecure
+echo 'port = 3307' >> /etc/mysql/my.cnf
+echo 'skip-name-resolve = 1' >> /etc/mysql/my.cnf
 mysqld &
-
 timeout 60 bash -c "until mysql -uroot -e 'select null limit 1'; do sleep 1; done" 
-mysql -uroot -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'super';" 
 
+# Setup tracker DB
+## FIXME: mogdbsetup will report access denied... seems have no effect in the following run?
+mysql -uroot -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'super';" 
 mogdbsetup --type=MySQL --yes --dbrootuser=root --dbrootpass=super --dbname=mogilefs --dbuser=mogile --dbpassword=mogilepw
 
+# Config mogilefs host/device/domain/classes
 sudo -u mogile mogilefsd -c /etc/mogilefs/mogilefsd.conf &
 sleep 5
 
