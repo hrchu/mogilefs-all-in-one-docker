@@ -10,6 +10,12 @@ if [ $MYSQL_FILE_COUNT != 0 ]; then
   chown mysql:mysql /var/run/mysqld  
   rm /var/run/mysqld/*
   find /var/lib/mysql -type f -exec touch {} \;
+
+  sed -i /port/d /etc/mysql/my.cnf
+  sed -i /skip-name-resolve/d /etc/mysql/my.cnf
+  echo 'port = 3307' >> /etc/mysql/my.cnf
+  echo 'skip-name-resolve = 1' >> /etc/mysql/my.cnf
+
   mysqld &
   sleep 3; timeout 60 bash -c "until mysql -uroot -psuper -e 'select null limit 1'; do sleep 1; done" 
 
